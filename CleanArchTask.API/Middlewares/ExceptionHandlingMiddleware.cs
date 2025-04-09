@@ -23,7 +23,7 @@ namespace CleanArchTask.API.Middlewares
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await httpContext.Response.WriteAsJsonAsync
                     (
-                    new Response<int>((int)ResponseStatusCode.BadRequest,string.Join(", ", ex.Errors))
+                    new Response<int>((int)ResponseStatusCode.BadRequest,string.Join(", ", ex.Message))
                     );
             }
             catch (Exception ex)
