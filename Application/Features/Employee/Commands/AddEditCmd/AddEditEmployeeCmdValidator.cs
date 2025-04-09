@@ -7,7 +7,7 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
         public AddEditEmployeeCmdValidator() 
         {
             RuleFor(e=>e.Id)
-                .Must(id => id == null || id >= 0).WithMessage("I Cante be Less Than 0");
+                .Must(id => id == null || id >= 0).WithMessage("Id Can't be Less Than 0");
             RuleFor(e => e.FullNameAr)
                 .NotEmpty().WithMessage("You must provide The Arabic Name");
             RuleFor(e => e.FullNameEn)
