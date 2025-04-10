@@ -1,4 +1,5 @@
 ﻿using CleanArchTask.Application.Features.Employee.Commands.AddEditCmd;
+using CleanArchTask.Application.Features.Employee.Commands.DeleteCmd;
 using CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Domain.Common.Enums;
@@ -53,16 +54,18 @@ namespace CleanArchTask.Persistence.Repositories
             return employee.Id;
         }
 
-        public async Task<int> DeleteEmployeesAsync(int[] ids)
+        public async Task<int> DeleteEmployeesAsync(DeleteEmployeesCmd cmd)
         {
-            var count  = 0;
-            foreach (var id in ids)
+            var count = 0;
+            if (cmd.isAllSelected == true)
             {
-                var employee = Employees.FirstOrDefault(e => e.Id == id);
-                if (employee is null)
-                    continue;
-                count++;
-                Employees.Remove(employee);
+                var idsToExclude = cmd.ExcludedIds?.ToHashSet() ?? [];
+                count = Employees.RemoveAll(e => !idsToExclude.Contains(e.Id));
+            }
+            else
+            {
+                var idsToDelete = cmd.Ids.ToHashSet();
+                count = Employees.RemoveAll(e => idsToDelete.Contains(e.Id));
             }
             return count;
         }
@@ -117,8 +120,8 @@ namespace CleanArchTask.Persistence.Repositories
                 #endregion
 
                 // Pagination
-                var result = employees.Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize).ToList();
+                var result = employees.Skip((request.PageNumber.Value - 1) * request.PageSize.Value)
+                    .Take(request.PageSize.Value).ToList();
 
                 return (result, count);
             }

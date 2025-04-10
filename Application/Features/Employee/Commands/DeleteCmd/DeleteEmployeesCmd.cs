@@ -5,9 +5,8 @@ using MediatR;
 
 namespace CleanArchTask.Application.Features.Employee.Commands.DeleteCmd
 {
-    public class DeleteEmployeesCmd : IRequest<Response<int>>
+    public class DeleteEmployeesCmd : DeleteModel, IRequest<Response<int>>
     {
-        public int[] Ids { get; set; } 
     }
 
     public class DeleteEmployeesCmdHandler : IRequestHandler<DeleteEmployeesCmd, Response<int>>
@@ -23,7 +22,7 @@ namespace CleanArchTask.Application.Features.Employee.Commands.DeleteCmd
         {
             try
             {
-                var result = await _repo.DeleteEmployeesAsync(request.Ids);
+                var result = await _repo.DeleteEmployeesAsync(request);
                 return new Response<int>((int)ResponseStatusCode.NoContent, true, result, null, "Saved successfully");
             }
             catch (Exception ex)

@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{ADA800B8-E2F6-41F3-AE7C-1F1446A4E978}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchTask.Domain", "Domain\CleanArchTask.Domain.csproj", "{26707954-4079-4AD6-A79D-1BD0B246F398}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchTask.Domain", "Domain\CleanArchTask.Domain.csproj", "{26707954-4079-4AD6-A79D-1BD0B246F398}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchTask.Application", "Application\CleanArchTask.Application.csproj", "{A6A0EAD4-AA1F-4754-B059-8CF6B17561B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchTask.Application", "Application\CleanArchTask.Application.csproj", "{A6A0EAD4-AA1F-4754-B059-8CF6B17561B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchTask.Persistence", "Persistence\CleanArchTask.Persistence.csproj", "{24FEA496-AFD1-4531-9BE0-659DF70B0421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchTask.Persistence", "Persistence\CleanArchTask.Persistence.csproj", "{24FEA496-AFD1-4531-9BE0-659DF70B0421}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchTask.API", "CleanArchTask.API\CleanArchTask.API.csproj", "{E52AC238-3F8B-4E4B-B3E4-F6C69DEB3E18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchTask.API", "CleanArchTask.API\CleanArchTask.API.csproj", "{E52AC238-3F8B-4E4B-B3E4-F6C69DEB3E18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,8 +1,5 @@
 ﻿using CleanArchTask.Application.Behaviors;
-using CleanArchTask.Application.Features.Employee.Commands.AddEditCmd;
-using CleanArchTask.Application.Features.Employee.Commands.DeleteCmd;
 using CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery;
-using CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Persistence.Repositories;
 using FluentValidation;

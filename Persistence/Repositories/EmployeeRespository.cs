@@ -1,4 +1,5 @@
 ﻿using CleanArchTask.Application.Features.Employee.Commands.AddEditCmd;
+using CleanArchTask.Application.Features.Employee.Commands.DeleteCmd;
 using CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Domain.Common.Enums;
@@ -66,8 +67,8 @@ namespace Persistence.Repositories
                 #endregion
 
                 // Pagination
-                var result = await query.Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize).AsNoTracking().ToListAsync();
+                var result = await query.Skip((request.PageNumber.Value - 1) * request.PageSize.Value)
+                    .Take(request.PageSize.Value).AsNoTracking().ToListAsync();
 
                 return (result, count);
             }
@@ -102,12 +103,26 @@ namespace Persistence.Repositories
             return result;
         }
         // Return number of Affected Rows
-        public async Task<int> DeleteEmployeesAsync(int[] ids)
+        public async Task<int> DeleteEmployeesAsync(DeleteEmployeesCmd cmd)
         {
-            var employees = await _set.Where(e => ids.Contains(e.Id))
-                .ToListAsync();
+            if (cmd.isAllSelected == true)
+            {
+                var idsToExclude = cmd.ExcludedIds?.ToHashSet() ?? [];
 
-            _context.Employees.RemoveRange(employees);
+                var employeesToDelete = await _set.Where(e => !idsToExclude.Contains(e.Id))
+                    .ToListAsync();
+
+                _context.Employees.RemoveRange(employeesToDelete);
+            }
+            else
+            {
+                var idsToDelete = cmd.Ids.ToHashSet();
+
+                var employeesToDelete = await _set.Where(e => idsToDelete.Contains(e.Id))
+                    .ToListAsync();
+
+                _context.Employees.RemoveRange(employeesToDelete);
+            }
             var result = await _context.SaveChangesAsync();
             return result;
         }
