@@ -1,13 +1,13 @@
 ﻿using CleanArchTask.Application.Behaviors;
 using CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
-using CleanArchTask.Persistence.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Data;
+using Persistence.Repositories;
 
 namespace Persistence
 {
@@ -18,7 +18,7 @@ namespace Persistence
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
-            services.AddSingleton<IEmployeeRepository, EmployeeRepositoryTest>();
+            services.AddScoped<IEmployeeRepository, EmployeeRespository>();
 
             services.AddMediatR(cfg =>
             {

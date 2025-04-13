@@ -4,6 +4,7 @@ using CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Domain.Common.Enums;
 using CleanArchTask.Domain.Entities;
+using CleanArchTask.Persistence.Extenstions;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 
@@ -20,12 +21,13 @@ namespace Persistence.Repositories
         }
         public async Task<Employee> GetEmployeeByIdAsync(int id)
         {
-            var employee = await _set.FindAsync(id);
+            var employee = await _set.Include(e=>e.Department)
+                .FirstOrDefaultAsync(e=>e.Id == id);
             return employee;
         }
         public async Task<(IEnumerable<Employee>, int)> GetEmployeesAsync(GetEmployeesQuery request)
         {
-            var query = _set.AsQueryable();
+            var query = _set.Include(e=>e.Department).AsQueryable();
             int count = await _set.CountAsync();
             if (request.Mode == WorkingMode.Client)
             {
@@ -34,41 +36,34 @@ namespace Persistence.Repositories
             }else
             {
                 // Sorting
-                #region Sorting
+                //query = query.ApplySorting(request.SortColumn,request.SortDirection);
+
+                #region Sorting Using Expression
                 switch (request.SortColumn?.ToLower())
                 {
                     case "fullnamear":
-                        query = request.SortDirection.ToLower() == "desc"
-                            ? query.OrderByDescending(x => x.FullNameAr)
-                            : query.OrderBy(x => x.FullNameAr);
+                        query = query.ApplySortingUsingExp(e => e.FullNameAr, request.SortDirection);
                         break;
                     case "fullnameen":
-                        query = request.SortDirection.ToLower() == "desc"
-                            ? query.OrderByDescending(x => x.FullNameEn)
-                            : query.OrderBy(x => x.FullNameEn);
+                        query = query.ApplySortingUsingExp(e => e.FullNameEn, request.SortDirection);
                         break;
                     case "departmentar":
-                        query = request.SortDirection.ToLower() == "desc"
-                            ? query.OrderByDescending(x => x.DepartmentAr)
-                            : query.OrderBy(x => x.DepartmentAr);
+                        query = query.ApplySortingUsingExp(e => e.Department.NameEn ?? "", request.SortDirection);
                         break;
                     case "departmenten":
-                        query = request.SortDirection.ToLower() == "desc"
-                            ? query.OrderByDescending(x => x.DepartmentEn)
-                            : query.OrderBy(x => x.DepartmentEn);
+                        query = query.ApplySortingUsingExp(e => e.Department.NameEn ?? "", request.SortDirection);
                         break;
                     case "id":
                     default:
-                        query = request.SortDirection.ToLower() == "desc"
-                            ? query.OrderByDescending(x => x.Id)
-                            : query.OrderBy(x => x.Id);
+                        query = query.ApplySortingUsingExp(e => e.Id, request.SortDirection);
                         break;
                 }
                 #endregion
 
                 // Pagination
-                var result = await query.Skip((request.PageNumber.Value - 1) * request.PageSize.Value)
-                    .Take(request.PageSize.Value).AsNoTracking().ToListAsync();
+                var result = await query
+                    .ApplyPagination(request.PageNumber.Value,request.PageSize.Value)
+                    .AsNoTracking().ToListAsync();
 
                 return (result, count);
             }
@@ -77,26 +72,24 @@ namespace Persistence.Repositories
         // -1 Not Found, -2 BadRequest
         public async Task<int> AddEmployeeAsync(AddEditEmployeeCmd request)
         {
-            // Validations
-            //
-            if(true)
+            Employee employee = new Employee() 
             {
-                return -1 ;
-            }
-            Employee employee = new Employee() { };
+                FullNameAr = request.FullNameAr,
+                FullNameEn = request.FullNameEn,
+                DepartmentId = request.DepartmentId,
+                Age = request.Age,
+            };
             await _set.AddAsync(employee);
             var result = await _context.SaveChangesAsync();
             return result; // ?? or Employee Id
         }
         public async Task<int> UpdateEmployeeAsync(AddEditEmployeeCmd request)
         {
-            // Validations
-            //
-            if (true)
-            {
-                return -2;
-            }
             Employee employee = await _set.FindAsync(request.Id); // using Data 
+            employee.FullNameEn = request.FullNameEn;
+            employee.FullNameAr = request.FullNameAr;
+            employee.DepartmentId = request.DepartmentId;
+            employee.Age = request.Age;
             if (employee is null) return -1;
             _set.Update(employee);
             var result = await _context.SaveChangesAsync();

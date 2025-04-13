@@ -10,8 +10,8 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
         public int? Id { get; set; }
         public string FullNameAr {  get; set; }
         public string FullNameEn {  get; set; }
-        public string DepartmentAr {  get; set; }
-        public string DepartmentEn {  get; set; }
+        public int? DepartmentId {  get; set; }
+        public int Age {  get; set; }
         // Required Data
     }
     public class AddEditEmployeeCmdHandler : IRequestHandler<AddEditEmployeeCmd, Response<int>>

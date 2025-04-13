@@ -9,10 +9,12 @@ namespace CleanArchTask.Application.Mapping.Employee
             return new EmployeeDto
             {
                 Id = employee.Id,
+                Age = employee.Age,
                 FullNameAr= employee.FullNameAr,
                 FullNameEn= employee.FullNameEn,
-                DepartmentAr= employee.DepartmentAr,
-                DepartmentEn= employee.DepartmentEn,
+                DepartmentId = employee.DepartmentId ?? 0,
+                DepartmentAr= employee.Department?.NameAr ?? "",
+                DepartmentEn= employee.Department?.NameEn ?? "",
             };
         }
 

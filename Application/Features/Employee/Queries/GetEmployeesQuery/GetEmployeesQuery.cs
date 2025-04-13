@@ -25,7 +25,7 @@ namespace CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery
             try
             {
                 var (employees, count) = await _repo.GetEmployeesAsync(request);
-                var dtoList = employees.Select(e => e.ToDto());
+                var dtoList = employees.ToDtoList();
                 return new Response<IEnumerable<EmployeeDto>>((int)ResponseStatusCode.OK, true, dtoList, count, "Data Retrieved");
             }
             catch (Exception ex)

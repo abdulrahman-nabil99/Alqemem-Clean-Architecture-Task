@@ -12,10 +12,12 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
                 .NotEmpty().WithMessage("You must provide The Arabic Name");
             RuleFor(e => e.FullNameEn)
                 .NotEmpty().WithMessage("You must provide The English Name");
-            RuleFor(e => e.DepartmentAr)
-                .NotEmpty().WithMessage("You must provide The Arabic Department");
-            RuleFor(e => e.DepartmentEn)
-                .NotEmpty().WithMessage("You must provide The English Department");
+            RuleFor(e => e.Age)
+                .NotNull().WithMessage("You must provide Age of the Employee")
+                .Must(age=>age>0).WithMessage("Age must be more than 0");
+            RuleFor(e => e.DepartmentId)
+                .NotNull().WithMessage("You must provide Department of the Employee")
+                .Must(deptId=>deptId > 0 ).WithMessage("Please Provide a valid Department Id"); 
         }
     }
 }

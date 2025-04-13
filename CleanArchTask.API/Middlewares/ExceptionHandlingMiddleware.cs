@@ -23,7 +23,7 @@ namespace CleanArchTask.API.Middlewares
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await httpContext.Response.WriteAsJsonAsync
                     (
-                    new Response<int>((int)ResponseStatusCode.BadRequest, ex.Message)
+                    new Response<int?>((int)ResponseStatusCode.BadRequest, ex.Message)
                     );
             }
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace CleanArchTask.API.Middlewares
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await httpContext.Response.WriteAsJsonAsync
                     (
-                    new Response<int>((int)ResponseStatusCode.InternalServerError, ex.Message)
+                    new Response<int?>((int)ResponseStatusCode.InternalServerError, ex.Message)
                     );
             }
         }
