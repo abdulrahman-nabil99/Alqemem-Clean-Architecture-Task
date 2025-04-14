@@ -1,6 +1,7 @@
 ﻿using CleanArchTask.Application.Behaviors;
 using CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery;
 using CleanArchTask.Application.Interfaces.Respositories;
+using CleanArchTask.Persistence.Repositories;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ namespace Persistence
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IEmployeeRepository, EmployeeRespository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IMaritalStatusRepository, MaritalStatusRepository>();
 
             services.AddMediatR(cfg =>
             {

@@ -8,11 +8,16 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
     public class AddEditEmployeeCmd : IRequest<Response<int>>
     {
         public int? Id { get; set; }
-        public string FullNameAr {  get; set; }
-        public string FullNameEn {  get; set; }
-        public int? DepartmentId {  get; set; }
+        public string FNameAr {  get; set; }
+        public string FNameEn {  get; set; }
+        public string LNameAr {  get; set; }
+        public string LNameEn {  get; set; }
+        public string Email { get; set; }
+        public string Mobile { get; set; }
+        public string Address { get; set; }
         public int Age {  get; set; }
-        // Required Data
+        public int MaritalStatusId { get; set; }
+        public int DepartmentId {  get; set; }
     }
     public class AddEditEmployeeCmdHandler : IRequestHandler<AddEditEmployeeCmd, Response<int>>
     {
@@ -27,6 +32,10 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
         {
             try
             {
+                var checkResponse = await _repo.CheckEmailAndMobileExists(request.Email,request.Mobile,request.Id);
+                if (checkResponse is not null) 
+                    return new Response<int>((int) ResponseStatusCode.BadRequest,"Email is already in use");
+
                 int result = 0;
                 if (request.Id is null || request.Id <= 0)
                     result = await _repo.AddEmployeeAsync(request);

@@ -3,15 +3,16 @@ using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Application.Mapping.Employee;
 using CleanArchTask.Domain.Common.Enums;
 using CleanArchTask.Domain.Common.Models;
+using CleanArchTask.Domain.Entities;
 using MediatR;
 
 namespace CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery
 {
-    public class GetEmployeesQuery: GetEntities,IRequest<Response<IEnumerable<EmployeeDto>>>
+    public class GetEmployeesQuery: GetEntities,IRequest<Response<IEnumerable<EmployeesView>>>
     {
 
     }
-    public class GetEmployeesHandler : IRequestHandler<GetEmployeesQuery, Response<IEnumerable<EmployeeDto>>>
+    public class GetEmployeesHandler : IRequestHandler<GetEmployeesQuery, Response<IEnumerable<EmployeesView>>>
     {
         private readonly IEmployeeRepository _repo;
 
@@ -20,17 +21,16 @@ namespace CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery
             _repo = repo;
         }
 
-        public async Task<Response<IEnumerable<EmployeeDto>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<EmployeesView>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var (employees, count) = await _repo.GetEmployeesAsync(request);
-                var dtoList = employees.ToDtoList();
-                return new Response<IEnumerable<EmployeeDto>>((int)ResponseStatusCode.OK, true, dtoList, count, "Data Retrieved");
+                return new Response<IEnumerable<EmployeesView>>((int)ResponseStatusCode.OK, true, employees, count, "Data Retrieved");
             }
             catch (Exception ex)
             {
-                return new Response<IEnumerable<EmployeeDto>>((int) ResponseStatusCode.InternalServerError, ex.Message);
+                return new Response<IEnumerable<EmployeesView>>((int) ResponseStatusCode.InternalServerError, ex.Message);
 
             }
 

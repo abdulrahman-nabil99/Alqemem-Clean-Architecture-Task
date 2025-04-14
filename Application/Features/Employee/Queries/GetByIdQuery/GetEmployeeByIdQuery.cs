@@ -1,8 +1,8 @@
 ﻿using CleanArchTask.Application.DTOs.Employee;
 using CleanArchTask.Application.Interfaces.Respositories;
-using CleanArchTask.Application.Mapping.Employee;
 using CleanArchTask.Domain.Common.Enums;
 using CleanArchTask.Domain.Common.Models;
+using CleanArchTask.Domain.Entities;
 using MediatR;
 
 namespace CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery
@@ -29,8 +29,7 @@ namespace CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery
                 if (employee is null)
                     return new Response<EmployeeDto>((int)ResponseStatusCode.NotFound, false, null, null, "Employee Not Found");
 
-                var dto = employee.ToDto();
-                return new Response<EmployeeDto>((int)ResponseStatusCode.OK, true, dto, 1, "Data Retrieved");
+                return new Response<EmployeeDto>((int)ResponseStatusCode.OK, true, employee, 1, "Data Retrieved");
             }
             catch (Exception ex)
             {

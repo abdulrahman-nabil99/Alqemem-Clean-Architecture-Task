@@ -1,5 +1,7 @@
-﻿using CleanArchTask.Application.Features.Employee.Commands.AddEditCmd;
+﻿using Azure.Core;
+using CleanArchTask.Application.Features.Employee.Commands.AddEditCmd;
 using CleanArchTask.Application.Features.Employee.Commands.DeleteCmd;
+using CleanArchTask.Application.Features.Employee.Queries.CheckEmailExistsQuery;
 using CleanArchTask.Application.Features.Employee.Queries.GetByIdQuery;
 using CleanArchTask.Application.Features.Employee.Queries.GetEmployeesQuery;
 using MediatR;
@@ -51,6 +53,18 @@ namespace CleanArchTask.API.Controllers
         {
             var response = await _mediator.Send(request);
             return StatusCode(response.StatusCode, response);
+        }
+        [HttpGet("emailExists")]
+        public async Task<IActionResult> EmailExists([FromQuery] CheckEmployeeEmailExistsQuery request)
+        {
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+        [HttpGet("mobileExists")]
+        public async Task<IActionResult> MobileExists([FromQuery] CheckEmployeeMobileExistsQuery request)
+        {
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 }

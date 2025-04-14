@@ -46,7 +46,6 @@ namespace CleanArchTask.Persistence.Extenstions
             }
         }
 
-
         public static IQueryable<T> ApplyPagination<T>(this IQueryable<T> query, int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber < 1) pageNumber = 1;

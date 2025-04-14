@@ -10,11 +10,15 @@ namespace CleanArchTask.Application.Mapping.Employee
             {
                 Id = employee.Id,
                 Age = employee.Age,
-                FullNameAr= employee.FullNameAr,
-                FullNameEn= employee.FullNameEn,
+                FNameAr= employee.FNameAr,
+                LNameAr= employee.LNameAr,
+                FNameEn = employee.FNameEn,
+                LNameEn = employee.LNameEn,
+                Email = employee.Email,
                 DepartmentId = employee.DepartmentId ?? 0,
-                DepartmentAr= employee.Department?.NameAr ?? "",
-                DepartmentEn= employee.Department?.NameEn ?? "",
+                Address= employee.Address,
+                MaritalStatusId= employee.MaritalStatusId ?? 0,
+                Mobile = employee.Mobile,
             };
         }
 
