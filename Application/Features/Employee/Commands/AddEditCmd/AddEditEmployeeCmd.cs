@@ -1,7 +1,9 @@
-﻿using CleanArchTask.Application.Interfaces.Respositories;
+﻿using CleanArchTask.Application.Hubs;
+using CleanArchTask.Application.Interfaces.Respositories;
 using CleanArchTask.Domain.Common.Enums;
 using CleanArchTask.Domain.Common.Models;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
 {
@@ -22,10 +24,12 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
     public class AddEditEmployeeCmdHandler : IRequestHandler<AddEditEmployeeCmd, Response<int>>
     {
         private readonly IEmployeeRepository _repo;
+        private readonly IHubContext<EmployeesHub> _hub;
 
-        public AddEditEmployeeCmdHandler(IEmployeeRepository repo)
+        public AddEditEmployeeCmdHandler(IEmployeeRepository repo,IHubContext<EmployeesHub> hub)
         {
             _repo = repo;
+            _hub = hub;
         }
 
         public async Task<Response<int>> Handle(AddEditEmployeeCmd request, CancellationToken cancellationToken)
@@ -41,6 +45,9 @@ namespace CleanArchTask.Application.Features.Employee.Commands.AddEditCmd
                     result = await _repo.AddEmployeeAsync(request);
                 else if (request.Id > 0)
                     result = await _repo.UpdateEmployeeAsync(request);
+
+                if (result > 0)
+                    await _hub.Clients.All.SendAsync("reload", true);
 
                 return result switch
                 {

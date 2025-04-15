@@ -1,4 +1,5 @@
 using CleanArchTask.API.Middlewares;
+using CleanArchTask.Application.Hubs;
 using Persistence;
 namespace CleanArchTask.API
 {
@@ -10,6 +11,7 @@ namespace CleanArchTask.API
 
             // Add services to the container.
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddSignalR();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -43,6 +45,7 @@ namespace CleanArchTask.API
 
 
             app.MapControllers();
+            app.MapHub<EmployeesHub>("/employeeshub");
 
             app.Run();
         }
