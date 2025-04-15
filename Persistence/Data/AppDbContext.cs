@@ -34,11 +34,6 @@ namespace Persistence.Data
                       .IsUnique();
                 entity.HasIndex(e => e.Mobile)
                       .IsUnique();
-                entity.ToTable(t =>
-                {
-                    t.HasCheckConstraint("CK_Employees_MaritalStatus_ValidValues",
-                       "[MaritalStatus] IN (1, 2, 3, 4)");
-                });
 
             });
             modelBuilder.Entity<Department>(entity =>
