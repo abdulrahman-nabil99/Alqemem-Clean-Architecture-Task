@@ -81,63 +81,29 @@ namespace Persistence.Repositories
         // -1 Not Found, -2 BadRequest
         public async Task<int> AddEmployeeAsync(AddEditEmployeeCmd request)
         {
-            Employee employee = new Employee() 
-            {
-                FNameAr = request.FNameAr,
-                FNameEn = request.FNameEn,
-                LNameAr = request.LNameAr,
-                LNameEn = request.LNameEn,
-                Email = request.Email,
-                DepartmentId = request.DepartmentId,
-                Age = request.Age,
-                MaritalStatusId = request.MaritalStatusId,
-                Mobile = request.Mobile,
-                Address = request.Address,
-            };
-            await _set.AddAsync(employee);
+            await _set.AddAsync(request.FromCommand());
             var result = await _context.SaveChangesAsync();
             return result; // ?? or Employee Id
         }
         public async Task<int> UpdateEmployeeAsync(AddEditEmployeeCmd request)
         {
-            Employee employee = await _set.FindAsync(request.Id); // using Data 
-            employee.FNameAr = request.FNameAr;
-            employee.FNameEn = request.FNameEn;
-            employee.LNameAr = request.LNameAr;
-            employee.LNameEn = request.LNameEn;
-            employee.Email = request.Email;
-            employee.DepartmentId = request.DepartmentId;
-            employee.Age = request.Age;
-            employee.Address = request.Address;
-            employee.Mobile = request.Mobile;
-            employee.MaritalStatusId = request.MaritalStatusId;
-
+            Employee? employee = await _set.FindAsync(request.Id);
             if (employee is null) return -1;
-            _set.Update(employee);
+            _set.Update(request.FromCommand(employee));
             var result = await _context.SaveChangesAsync();
             return result;
         }
         // Return number of Affected Rows
         public async Task<int> DeleteEmployeesAsync(DeleteEmployeesCmd cmd)
         {
-            if (cmd.isAllSelected == true)
-            {
-                var idsToExclude = cmd.ExcludedIds?.ToHashSet() ?? [];
+            var employeesToDelete = await _set
+                .Where(e => 
+                        cmd.isAllSelected == true ? !(cmd.ExcludedIds != null && cmd.ExcludedIds.Contains(e.Id)) : 
+                                                     cmd.Ids.Contains(e.Id)
+                      )
+                .ToListAsync();
 
-                var employeesToDelete = await _set.Where(e => !idsToExclude.Contains(e.Id))
-                    .ToListAsync();
-
-                _context.Employees.RemoveRange(employeesToDelete);
-            }
-            else
-            {
-                var idsToDelete = cmd.Ids.ToHashSet();
-
-                var employeesToDelete = await _set.Where(e => idsToDelete.Contains(e.Id))
-                    .ToListAsync();
-
-                _context.Employees.RemoveRange(employeesToDelete);
-            }
+            _context.Employees.RemoveRange(employeesToDelete);
             var result = await _context.SaveChangesAsync();
             return result;
         }

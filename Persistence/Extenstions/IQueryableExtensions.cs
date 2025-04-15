@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace CleanArchTask.Persistence.Extenstions
 {
@@ -12,14 +13,16 @@ namespace CleanArchTask.Persistence.Extenstions
 
             var isDescending = sortDirection?.Trim().ToLower() == "desc";
 
-            if (sortColumn.Length > 1)
-                sortColumn = char.ToUpper(sortColumn[0]) + sortColumn.Substring(1);
-
             try
             {
+                var reflectColumnName = typeof(T)
+                    .GetProperty(sortColumn, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)?
+                    .Name ?? string.Empty;
+                if (string.IsNullOrEmpty(reflectColumnName))
+                    throw new ArgumentException("Invalid Column Name is used");
                 return isDescending
-                    ? query.OrderByDescending(e => EF.Property<object>(e, sortColumn))
-                    : query.OrderBy(e => EF.Property<object>(e, sortColumn));
+                    ? query.OrderByDescending(e => EF.Property<object>(e, reflectColumnName))
+                    : query.OrderBy(e => EF.Property<object>(e, reflectColumnName));
             }
             catch (Exception ex)
             {
